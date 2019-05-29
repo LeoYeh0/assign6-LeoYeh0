@@ -8,7 +8,7 @@ boolean cooldown;
 	final int HAND_OFFSET_Y = 37;
 	final int HAND_OFFSET_X_FORWARD = 64;
 	final int HAND_OFFSET_X_BACKWARD = 16;
-  float timer=0;
+  int timer=0;
   int framecount=0;
  
 Robot(float x,float y){
@@ -18,10 +18,10 @@ Robot(float x,float y){
 }
 void display(){
   laser.display();
-    if(speed>0||(speed==0&&player.x+w/2>=x+HAND_OFFSET_X_FORWARD)){
+    if(speed>0||(speed==0&&player.x+w/2>=x)){
    image(robot,x,y);
  }
-   if(speed<0||(speed==0&&player.x+w/2 <=x-HAND_OFFSET_X_BACKWARD )){
+   if(speed<0||(speed==0&&player.x+w/2 <=x )){
    
    pushMatrix();
    
@@ -36,7 +36,11 @@ void display(){
 
 void update(){
  
-    laser.update();
+   laser.update();
+     
+    frameCount++;
+    timer=frameCount%180;
+    println(timer);
     
       x += speed;
      boolean checkX = (speed>0 && player.x+w/2>=x+HAND_OFFSET_X_FORWARD)||
@@ -44,14 +48,14 @@ void update(){
     boolean checkY = (player.y>=y-h*2)&&(player.y<=y+h*2);
      boolean cooldown=timer++%180==0;
     if(checkY&& checkX){
-     
       speed=0;
-    
-    
-      laser.fire(x, y, player.x+w/2, player.y+w/2);
-    
    
-   }else{
+     if(player.x+w/2 <=x-HAND_OFFSET_X_BACKWARD ){laser.fire(x+HAND_OFFSET_X_BACKWARD, y+HAND_OFFSET_Y, player.x+w/2, player.y+w/2);}
+    if(player.x+w/2>=x+HAND_OFFSET_X_FORWARD ){laser.fire(x+HAND_OFFSET_X_FORWARD , y+HAND_OFFSET_Y, player.x+w/2, player.y+w/2);}
+    }
+    
+
+   else{
    
     if(x+w >= width){
     speed=-speed;
@@ -70,6 +74,8 @@ void update(){
   
  
     
+  
+  
 	// HINT: Player Detection in update()
 	/*
 
